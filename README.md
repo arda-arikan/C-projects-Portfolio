@@ -9,7 +9,7 @@ A console-based word guessing game developed to understand string manipulation a
 * *Key Concepts:* struct, string.h, Linear Search, Game Loop.
 * *Features:*
   * Health/Life system (5 attempts).
-  * Dynamic word masking (e.g., ******).
+  * Dynamic word masking.
   * Win/Loss detection logic.
 
 2. Expense Tracker (Bütçe Takip Sistemi) 
