@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Sadece ekrana tarih basmak için yardımcı fonksiyon
+void ekrana_tarih_bas(struct tm *zaman) {
+    printf("%d.%d.%d", zaman->tm_mday, zaman->tm_mon + 1, zaman->tm_year + 1900);
+}
+
+struct gider_sablon{
+	char harcanan_isim[30];
+	float harcanan_fiyat; 
+	
+};
+
+int main(){
+  float toplam=0.0;
+  int sayi;
+  struct gider_sablon gider;
+  while(1){
+  	printf("\n[1] Gider Kaydi Ekle");
+  	printf("\n[2] Programi Kapat");
+  	printf("\n[3] Aylik Gider Raporu");
+  	printf("\nIslem Numarasini Seciniz: ");
+  	scanf("%d",&sayi);
+  	
+  	if(sayi<1 || sayi>3){
+  		printf("\nDogru Islem Numarasi Tuslayiniz!!!\n");
+  		continue;
+	  }
+  	
+  	if(sayi==2){
+  		printf("\nProgram Kapatiliyor....");
+  		break; //Programı kapatır
+	  }
+
+  	if(sayi==1){
+  	printf("\n-----GIDER TABLOSU-----\n");
+  	printf("\nHarcamanin Ismi: ");
+  	scanf("%s",gider.harcanan_isim);
+  	printf("\nHarcamanin fiyati: ");
+  	scanf("%f",&gider.harcanan_fiyat);
+  	
+  	// Burada zmaanı yakalıyoruz giderimizi girerken otomatik o günün tarhini otomatik kendi girecek
+	time_t ham_zaman;
+	struct tm *zaman_al;
+	time(&ham_zaman);  // Saati al
+    zaman_al = localtime(&ham_zaman); // Tarihe çevir
+    
+    printf("\nKayit Tarihi: ");
+        ekrana_tarih_bas(zaman_al);
+  	
+  	FILE *dosya;
+  	dosya = fopen("Gider.txt",  "a");
+  	if(dosya != NULL){
+	
+  	fprintf(dosya,"\n%d.%d.%d  %s  %.2f", 
+            zaman_al->tm_mday,        // Gün (Otomatik)
+            zaman_al->tm_mon + 1,     // Ay (Otomatik +1)
+            zaman_al->tm_year + 1900, // Yıl (Otomatik +1900)
+            gider.harcanan_isim,
+            gider.harcanan_fiyat
+           );
+  	fclose(dosya);
+  	
+  	printf("\nDosyaya Kayit Edildi.\n");
+       }
+    
+    else{
+    	printf("\nDosya Hatasi...");
+	}
+      
+   }
+   
+   if(sayi==3){
+   	int istenen_ay,istenen_yil;
+   	
+   	int d_gun,d_ay,d_yil;
+   	char d_isim[30];
+   	float d_fiyat;
+   	float toplam=0.0;
+   	printf("\nIstenen Yıl: ");
+   	scanf("%d",&istenen_yil);
+   	printf("\nIstenen Ay: ");
+   	scanf("%d",&istenen_ay);
+   	FILE *dosya;
+   	dosya=fopen("Gider.txt",  "r");
+   	if(dosya == NULL){
+   		printf("\nDosya bulunamadi..");
+   		continue;
+	   }
+   	
+   	printf("\n*****%d YILI %d AYI HARCAMALARI*****",istenen_yil,istenen_ay);
+   	
+   	
+   	while(fscanf(dosya, "%d.%d.%d  %s  %.2f",&d_gun,&d_ay,&d_yil,d_isim,&d_fiyat) != EOF){
+   		if(d_ay==istenen_ay && d_yil==istenen_yil){
+   			printf("\n %d.%d.%d  %s  %.2f",d_gun,d_ay,d_yil,d_isim,d_fiyat);
+   			toplam+=d_fiyat;
+		   }
+   		
+	   }
+	   fclose(dosya);
+	   printf("\n%d YILI %d. CI AYI TOPLAM HARCAMA: %f",d_yil,d_ay,toplam);
+   }
+  }  
+  return 0;
+}
